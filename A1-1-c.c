@@ -1,11 +1,13 @@
-
 #include <iostream>
 #include <string>
 #include <map>
+#include <vector>
 using namespace std;
 
 map <string, string> f;
-
+vector <string> mappings;
+map <string, string> fmap;
+map <string, string> temp;
 
 string func(int i){
     if(i==0) return "a";
@@ -13,6 +15,41 @@ string func(int i){
     else return "c";
 }
 
+
+void addmapping(){
+    string newmap = f["aa"] + f["ab"] +f["ac"] + f["ba"] + f["bb"] + f["bc"]+f["ca"] + f["cb"]+ f["cc"]; 
+    mappings.push_back(newmap);
+}
+
+int constructAndCheckTemp(){
+    for(int i=0;i<3;i++){
+        for(int j=0;j<3;j++){
+            temp[fmap[func(i)]+ fmap[func(j)]] = fmap[f[func(i)+ func(j)]];
+        }
+    }
+    string comp = temp["aa"] + temp["ab"] + temp["ac"] + temp["ba"] + temp["bb"] + temp["bc"] + temp["ca"] + temp["cb"] + temp["cc"];
+    //cout<<"Comp is :"<<comp<<endl;
+    for(int i=0;i<mappings.size();i++){
+        if(comp.compare(mappings[i])==0) {//cout<<comp<<" "<<mappings[i]<<endl;
+        return 1;}
+    }
+    return 0;
+}
+int checkiso(){
+    if(mappings.size()==0) return 1;
+    fmap["a"] = "a";fmap["b"] = "c";fmap["c"]= "b";
+    if(constructAndCheckTemp())return 0;
+    fmap["a"] = "b";fmap["b"] = "a";fmap["c"]= "c";
+    if(constructAndCheckTemp())return 0;
+    fmap["a"] = "b";fmap["b"] = "c";fmap["c"]= "a";
+    if(constructAndCheckTemp())return 0;
+    fmap["a"] = "c";fmap["b"] = "a";fmap["c"]= "b";
+    if(constructAndCheckTemp())return 0;
+    fmap["a"] = "c";fmap["b"] = "b";fmap["c"]= "a";
+    if(constructAndCheckTemp())return 0;
+    else return 1;
+    
+}
 int tochecksemigroup(){
     
     string left1, left2, right1, right2, lres, rres;
@@ -29,7 +66,7 @@ int tochecksemigroup(){
             }
         }
     }
-    return 1;
+    return checkiso();
 }
 
 int main()
@@ -62,11 +99,12 @@ int main()
                                             cout<<"b|"<<func(i4)<<" "<<func(i5)<<" "<<func(i6)<<endl;
                                             cout<<"c|"<<func(i7)<<" "<<func(i8)<<" "<<func(i9)<<endl;
                                             cout<<endl;
+                                            addmapping();
                                         }
                                         
-                                        
                                     }
-                                    
+                                    //return 1;
+
                                     
                                 }
                             }
